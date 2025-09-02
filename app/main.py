@@ -19,5 +19,5 @@ def setUrl():
     return f"https://opendata.aemet.es/opendata/api/antartida/datos/fechaini/{fechaIniStr}/fechafin/{fechaFinStr}/estacion/{identificacion}"
 #variables
 url=setUrl()
-endPoint= httpx.get(url, headers={"api_key":api_key})
-print (endPoint.status_code)
+endPoint= httpx.get(f"{url}?api_key={api_key}")
+print (endPoint.json())
