@@ -12,10 +12,16 @@ def setFecha():
         return fecha.strftime("%Y-%m-%dT%H:%M:%S")
     except ValueError:
         raise ValueError("La fecha no tiene el formato AAAA-MM-DDTHH:MM:SS o no es válida")
+def setIdentificacion():
+    x=int(input("Seleccione estación \n 1. Gabriel de Castilla \n 2. Juan Carlos I"))
+    if x==1:
+        return "GabrielDeCastilla"
+    elif x==2:
+        return "JuanCarlosI"
 def setUrl():
     fechaIniStr=setFecha()
     fechaFinStr=setFecha()
-    identificacion=input("identificador de la estación")
+    identificacion= setIdentificacion()
     return f"https://opendata.aemet.es/opendata/api/antartida/datos/fechaini/{fechaIniStr}/fechafin/{fechaFinStr}/estacion/{identificacion}"
 #variables
 url=setUrl()
