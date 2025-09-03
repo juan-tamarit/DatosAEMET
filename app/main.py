@@ -26,4 +26,6 @@ def setUrl():
 #variables
 url=setUrl()
 endPoint= httpx.get(f"{url}?api_key={api_key}",timeout=30.0)
-print (endPoint.json())
+url_datos=endPoint.json()["datos"]
+datos= httpx.get(f"{url_datos}?api_key={api_key}")
+print(datos.json())
