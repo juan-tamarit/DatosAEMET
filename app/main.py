@@ -12,26 +12,23 @@ def setFecha():
         return fecha.strftime("%Y-%m-%dT%H:%M:%SUTC")
     except ValueError:
         raise ValueError("La fecha no tiene el formato AAAA-MM-DDTHH:MM:SS o no es válida")
-def setIdentificacion():
-    x=int(input("Seleccione estación \n 1. Gabriel de Castilla \n 2. Juan Carlos I"))
-    if x==1:
-        return 89070
-    elif x==2:
-        return 89064
-def setUrl():
-    fechaIniStr=setFecha()
-    fechaFinStr=setFecha()
-    identificacion= setIdentificacion()
-    return f"https://opendata.aemet.es/opendata/api/antartida/datos/fechaini/{fechaIniStr}/fechafin/{fechaFinStr}/estacion/{identificacion}"
-def getData():
+def setUrl(x):
+    if(x==1):
+        sol=f"https://opendata.aemet.es/opendata/api/observacion/convencional/todas"
+    elif(x==2):
+        fechaIniStr=setFecha()
+        fechaFinStr=setFecha()
+        sol=f"https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{fechaIniStr}/fechafin/{fechaFinStr}/todasestaciones"
+    return sol
+def getData(x):
     try:
-        url=setUrl()
-        endPoint= httpx.get(f"{url}?api_key={api_key}",timeout=30.0)
+        url=setUrl(x)
+        endPoint= httpx.get(f"{url}?api_key={api_key}",timeout=300.0)
         endPoint.raise_for_status()
         url_datos=endPoint.json()["datos"]
-        datos= httpx.get(f"{url_datos}?api_key={api_key}")
+        datos= httpx.get(f"{url_datos}?api_key={api_key}",timeout=300.0)
         datos.raise_for_status()
-        return datos.json()
+        return datos
     except httpx.RequestError as exc:
         print (f"Error en la conexión al intentar acceder a {exc.request.url}->{exc}")
     except httpx.HTTPStatusError as exc:
@@ -39,4 +36,6 @@ def getData():
     except ValueError:
         print(f"La respuesta no tiene un formato JSON válido")
 #variables
-data=getData()
+x=input("1: tiempo actual\n2: tiempo entre dos fechas pasadas")
+data=getData(x)
+print (data.text) #Según la documentación de AEMET debería devolver un json pero nos está devolviendo un fichero de texto.
